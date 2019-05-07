@@ -1,5 +1,11 @@
 export default class SynapsefiClient {
 
+    constructor(){
+
+        this.oauthUser = this.oauthUser.bind(this);
+
+    }
+
     userId = '5ca5162f774ea600675da363';
 
     headers = {
@@ -8,6 +14,7 @@ export default class SynapsefiClient {
         'X-SP-USER': '|123456',
         'Content-Type': 'application/json'
     };
+
 
     getUser(userId) {
         return fetch('https://uat-api.synapsefi.com/v3.1/users/' + this.userId,{
@@ -19,7 +26,7 @@ export default class SynapsefiClient {
 
     getUsers() {
         return fetch('https://uat-api.synapsefi.com/v3.1/users',{
-            method:"GET",
+            method: "GET",
             headers: this.headers
         })
             .then(res => res.json());
@@ -27,9 +34,20 @@ export default class SynapsefiClient {
 
     createUser(data) {
         return fetch('https://uat-api.synapsefi.com/v3.1/users', {
-            method:"POST",
+            method: "POST",
             headers: this.headers,
-            body: data
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .catch(error => console.error(error));
+    }
+
+    oauthUser(token,userId){
+        console.log(token,userId)
+        return fetch('https://uat-api.synapsefi.com/v3.1/oauth/' + userId, {
+            method: "POST",
+            headers: this.headers,
+            body: JSON.stringify(token)
         })
             .then(res => res.json())
             .catch(error => console.error(error));
