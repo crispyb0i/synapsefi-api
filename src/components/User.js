@@ -41,7 +41,6 @@ export default class User extends React.Component {
 
     handleNameChange(event) {
         this.setState({nameValue: event.target.value});
-        console.log({...this.state.createUserObject})
     }
 
     handleEmailChange(event) {
@@ -50,7 +49,6 @@ export default class User extends React.Component {
 
     handlePhoneChange(event) {
         this.setState({phoneValue: event.target.value});
-        console.log({...this.state.createUserObject, logins:"WHOO", phone_numbers:"HI", legal_names:"BOO"})
     }
 
     handleSubmit(event) {
@@ -59,16 +57,11 @@ export default class User extends React.Component {
         let name = this.state.createUserObject.legal_names;
         let phone = this.state.createUserObject.phone_numbers;
 
-        console.log(email,name,phone)
-
         email[0].email= this.state.emailValue;
         this.state.createUserObject.legal_names = [this.state.nameValue];
         this.state.createUserObject.phone_numbers = [this.state.phoneValue];
 
-        console.log(email, name, phone)
-
         this.setState({...this.state.createUserObject, logins:email, phone_numbers:phone, legal_names:name});
-        console.log(this.state.createUserObject)
         this.synapsefiClient.createUser(this.state.createUserObject).then(
             (result) => {
                 if(result.error){
@@ -90,19 +83,15 @@ export default class User extends React.Component {
     }
 
     oauthUser(e){
-        if(e.target.innerHTML === "UNVERIFIED"){
+        if(e.target.className === "permission"){
             let id = e.target.dataset.id;
             let tokenKey = e.target.dataset.token;
             let token = {};
             token.refresh_token = tokenKey
-            console.log(token)
-            console.log(e.target.dataset.id)
             this.synapsefiClient.oauthUser(token,id).then(
                 (result) => {
                     let oauthKey = result.oauth_key
-                    console.log(oauthKey)
-                    console.log(result)
-                    alert('oauth Success! OauthKey: ' + oauthKey)
+                    alert('OauthKey: ' + oauthKey)
                     this.setState({userOauthKey:result.oauth_key})
                 }
             )
@@ -116,14 +105,13 @@ export default class User extends React.Component {
                 this.setState({
                     users: result.users
                 })
-                console.log(this.state.users)
                 this.state.users.forEach(function(item){
                    view.push(
                        <div className="usersView">
                            <p><strong>{item.legal_names[0]}</strong></p>
                            <p><strong>ID: </strong>{item._id}</p>
                            <p><strong>EMAIL: </strong>{item.logins[0].email}</p>
-                           <p data-token={item.refresh_token} data-id={item._id}>{item.permission}</p>
+                           <p className="permission" data-token={item.refresh_token} data-id={item._id}>{item.permission}</p>
                            <br/><br/><br/>
                        </div>
                    )

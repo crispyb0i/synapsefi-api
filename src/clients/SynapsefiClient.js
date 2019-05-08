@@ -43,7 +43,6 @@ export default class SynapsefiClient {
     }
 
     oauthUser(token,userId){
-        console.log(token,userId)
         return fetch('https://uat-api.synapsefi.com/v3.1/oauth/' + userId, {
             method: "POST",
             headers: this.headers,
